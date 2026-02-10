@@ -15,19 +15,15 @@ class DataAnalyzer:
         self.stations: pd.DataFrame | None = None
         self.maintenance: pd.DataFrame | None = None
 
-    # --------------------------------------------------
-    # Loading
-    # --------------------------------------------------
-
+        # Loading
+    
     def load_data(self) -> None:
         self.trips = pd.read_csv(DATA_DIR / "trips.csv")
         self.stations = pd.read_csv(DATA_DIR / "stations.csv")
         self.maintenance = pd.read_csv(DATA_DIR / "maintenance.csv")
 
-    # --------------------------------------------------
-    # Inspection
-    # --------------------------------------------------
-
+       # Inspection
+    
     def inspect(self) -> None:
         for name, df in [
             ("Trips", self.trips),
@@ -38,19 +34,8 @@ class DataAnalyzer:
             print(df.info())
             print(df.isnull().sum())
 
-    # --------------------------------------------------
-    # Cleaning
-    # --------------------------------------------------
-
-    def clean_all(self) -> None:
-        self._clean_trips()
-        self._clean_stations()
-        self._clean_maintenance()
-
-        self.trips.to_csv(DATA_DIR / "trips_clean.csv", index=False)
-        self.stations.to_csv(DATA_DIR / "stations_clean.csv", index=False)
-        self.maintenance.to_csv(DATA_DIR / "maintenance_clean.csv", index=False)
-
+        # Cleaning
+    
     def _clean_trips(self) -> None:
         df = self.trips.copy()
 
@@ -64,13 +49,26 @@ class DataAnalyzer:
         # 3. Remove invalid time ranges
         df = df[df["end_time"] > df["start_time"]]
 
-        # 4. Numeric columns
+        # 4. Numeric columns — предварительно очистим строки
+        df["duration_minutes"] = (
+            df["duration_minutes"]
+            .astype(str)
+            .str.replace(",", ".")
+            .str.strip()
+        )
+        df["distance_km"] = (
+            df["distance_km"]
+            .astype(str)
+            .str.replace(",", ".")
+            .str.strip()
+        )
+
         df["duration_minutes"] = pd.to_numeric(df["duration_minutes"], errors="coerce")
         df["distance_km"] = pd.to_numeric(df["distance_km"], errors="coerce")
 
         # 5. Handle missing values
         df["duration_minutes"] = df["duration_minutes"].fillna(df["duration_minutes"].median())
-        df["distance_km"] = df["distance_km"].fillna(0)
+        df["distance_km"] = df["distance_km"].fillna(df["distance_km"].median())
         df["status"] = df["status"].fillna("completed")
 
         # 6. Standardize categoricals
@@ -78,29 +76,7 @@ class DataAnalyzer:
         df["user_type"] = df["user_type"].str.lower().str.strip()
         df["bike_type"] = df["bike_type"].str.lower().str.strip()
 
-        self.trips = df
-
-    def _clean_stations(self) -> None:
-        df = self.stations.copy()
-
-        # Remove duplicates
-        df = df.drop_duplicates(subset=["station_id"])
-
-        # Clean strings
-        df["station_name"] = df["station_name"].str.strip()
-
-        # Ensure numeric types
-        df["capacity"] = pd.to_numeric(df["capacity"], errors="coerce").fillna(0)
-        df["latitude"] = pd.to_numeric(df["latitude"], errors="coerce")
-        df["longitude"] = pd.to_numeric(df["longitude"], errors="coerce")
-
-        # Drop invalid coordinates
-        df = df.dropna(subset=["latitude", "longitude"])
-
-        self.stations = df
-
-    def _clean_maintenance(self) -> None:
-        df = self.maintenance.copy()
-        df["date"] = pd.to_datetime(df["date"], errors="coerce")
-        self.maintenance = df
+        self.trips = df  
+    
+    
 
