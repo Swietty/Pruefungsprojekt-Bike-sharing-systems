@@ -1,0 +1,113 @@
+============================================================
+  CityBike — Analytics Summary Report
+============================================================
+
+--- Overall Summary ---
+Total trips        : 1495
+Total distance     : 11468.5 km
+Average duration   : 23.39 min
+
+--- Top 10 Start Stations ---
+station_id      station_name  trip_count
+     ST106          Old Town         113
+     ST104     Market Square         110
+     ST103    Riverside Park         109
+     ST107       Harbor View         107
+     ST112 Business District         105
+     ST102         City Hall         104
+     ST105          Tech Hub         103
+     ST113          Lakeside         102
+     ST100   Central Station          99
+     ST101 University Campus          96
+
+--- Peak Usage Hours ---
+hour
+6     74
+7     97
+8     68
+9     81
+10    76
+11    87
+12    91
+13    83
+14    75
+15    92
+16    95
+17    91
+18    99
+19    96
+20    98
+21    97
+22    95
+
+--- Busiest Days of Week ---
+weekday
+Tuesday      229
+Wednesday    223
+Thursday     217
+Monday       215
+Friday       212
+Sunday       207
+Saturday     192
+
+--- Avg Distance by User Type ---
+user_type
+casual    7.50
+member    7.77
+
+--- Avg Duration by User Type ---
+user_type
+casual    22.57
+member    23.84
+
+--- Monthly Trip Trend ---
+year_month
+2024-01    126
+2024-02    114
+2024-03    130
+2024-04    125
+2024-05    129
+2024-06    121
+2024-07    136
+2024-08    129
+2024-09    115
+2024-10    132
+2024-11    122
+2024-12    116
+Freq: M
+
+--- Top 15 Active Users ---
+user_id  trip_count
+USR1014          60
+USR1080          44
+USR1040          43
+USR1189          43
+USR1032          42
+USR1053          42
+USR1004          40
+USR1034          37
+USR1161          36
+USR1135          36
+USR1174          35
+USR1162          33
+USR1047          32
+USR1103          31
+USR1094          30
+
+--- Maintenance Cost by Bike Type ---
+bike_type
+classic      5496.39
+electric    13988.04
+
+--- Top 10 Most Common Routes ---
+start_station_id end_station_id  trip_count
+           ST113          ST105          14
+           ST107          ST107          13
+           ST101          ST105          12
+           ST106          ST114          12
+           ST109          ST102          11
+           ST103          ST101          11
+           ST103          ST103          11
+           ST103          ST111          11
+           ST107          ST106          11
+           ST108          ST105          11
