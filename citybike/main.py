@@ -15,19 +15,29 @@ from algorithms import (
     benchmark_search
 )
 
+
 def main():
-    
-    analyzer = DataAnalyzer()
+    # ---------------------------
+    # 1️⃣ Analytics
+    # ---------------------------
+    analyzer = DataAnalyzer(output_dir="output")  # теперь отчет будет в output/
     analyzer.load_data()
     analyzer.inspect()
+    analyzer._clean_trips()  # чистим данные
 
-    distances = analyzer.trips["distance_km"].copy()
-    distances = distances.fillna(distances.median())
+    # Пример работы с данными
+    distances = analyzer.trips["distance_km"].fillna(analyzer.trips["distance_km"].median())
     distances_list = distances.tolist()
 
     print("\n--- First 5 distances ---")
     print(distances_list[:5])
 
+    # Генерация финального отчета
+    analyzer.generate_summary_report()
+
+    # ---------------------------
+    # 2️⃣ BikeShareSystem Demo
+    # ---------------------------
     system = BikeShareSystem()
 
     bike = BikeFactory.create_from_dict({
@@ -66,9 +76,12 @@ def main():
     print(f"\nTrip cost: €{cost:.2f}")
     print(system)
 
-    # --- Sorting & Searching tests ---
+    # ---------------------------
+    # 3️⃣ Sorting & Searching Demo
+    # ---------------------------
     sorted_merge = merge_sort(distances_list)
     sorted_insertion = insertion_sort(distances_list)
+
     print("\n--- First 10 distances ---")
     print("Merge Sort:", sorted_merge[:10])
     print("Insertion Sort:", sorted_insertion[:10])
@@ -76,10 +89,13 @@ def main():
     target_distance = distances_list[len(distances_list)//2]  
     idx_binary = binary_search(sorted_merge, target_distance)
     idx_linear = linear_search(distances_list, target_distance)
+
     print(f"\nBinary search index for {target_distance}: {idx_binary}")
     print(f"Linear search index for {target_distance}: {idx_linear}")
 
-    # --- Benchmarking ---
+    # ---------------------------
+    # 4️⃣ Benchmarking
+    # ---------------------------
     print("\nSort benchmark (ms):", benchmark_sort(distances_list))
     print("Search benchmark (ms):", benchmark_search(distances_list, target_distance))
 
