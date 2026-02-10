@@ -4,9 +4,14 @@ from system import BikeShareSystem
 from factories import BikeFactory, UserFactory
 from models import Station, Trip, MaintenanceRecord, MaintenanceType
 from pricing import CasualPricing
+from analyzer import DataAnalyzer
 
 
 def main():
+    analyzer = DataAnalyzer()
+    analyzer.load_data()
+    analyzer.inspect()
+    analyzer.clean_all()
     system = BikeShareSystem()
 
     bike = BikeFactory.create_from_dict({
