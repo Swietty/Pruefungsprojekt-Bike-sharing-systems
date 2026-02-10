@@ -18,25 +18,24 @@ from algorithms import (
 
 def main():
     # ---------------------------
-    # 1️⃣ Analytics
+    # Analytics
     # ---------------------------
-    analyzer = DataAnalyzer(output_dir="output")  # теперь отчет будет в output/
+    analyzer = DataAnalyzer(output_dir="output")  
     analyzer.load_data()
     analyzer.inspect()
-    analyzer._clean_trips()  # чистим данные
+    analyzer._clean_trips() 
 
-    # Пример работы с данными
     distances = analyzer.trips["distance_km"].fillna(analyzer.trips["distance_km"].median())
     distances_list = distances.tolist()
 
     print("\n--- First 5 distances ---")
     print(distances_list[:5])
 
-    # Генерация финального отчета
+    # Generate summary report (this will create output/summary_report.txt)
     analyzer.generate_summary_report()
 
     # ---------------------------
-    # 2️⃣ BikeShareSystem Demo
+    # BikeShareSystem Demo
     # ---------------------------
     system = BikeShareSystem()
 
@@ -77,7 +76,7 @@ def main():
     print(system)
 
     # ---------------------------
-    # 3️⃣ Sorting & Searching Demo
+    # Sorting & Searching Demo
     # ---------------------------
     sorted_merge = merge_sort(distances_list)
     sorted_insertion = insertion_sort(distances_list)
@@ -94,11 +93,25 @@ def main():
     print(f"Linear search index for {target_distance}: {idx_linear}")
 
     # ---------------------------
-    # 4️⃣ Benchmarking
+    # Benchmarking
     # ---------------------------
     print("\nSort benchmark (ms):", benchmark_sort(distances_list))
     print("Search benchmark (ms):", benchmark_search(distances_list, target_distance))
 
+    # ---------------------------
+    # Visualizations
+    # ---------------------------
+    from visualization import (
+        plot_trips_per_station,
+        plot_monthly_trend,
+        plot_duration_histogram,
+        plot_duration_by_user_type
+    )
+
+    plot_trips_per_station(analyzer.trips, analyzer.stations)
+    plot_monthly_trend(analyzer.trips)
+    plot_duration_histogram(analyzer.trips)
+    plot_duration_by_user_type(analyzer.trips)
 
 if __name__ == "__main__":
     main()
