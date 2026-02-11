@@ -1,6 +1,6 @@
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt # type: ignore
 import pandas as pd
-import seaborn as sns  
+import seaborn as sns   # type: ignore
 from pathlib import Path
 
 
@@ -73,8 +73,13 @@ def plot_duration_by_user_type(trips: pd.DataFrame) -> None:
     
     fig, ax = plt.subplots(figsize=(8, 5))
     
-    sns.boxplot(x="user_type", y="duration_minutes", data=df,
-                palette="Pastel1", ax=ax, showfliers=False)  
+    sns.boxplot(
+    x="user_type",
+    y="duration_minutes",
+    data=df,
+    palette="Set2",
+    hue="user_type", 
+    legend=False    )  
     
     ax.set_xlabel("User Type", fontsize=12)
     ax.set_ylabel("Duration (minutes)", fontsize=12)
