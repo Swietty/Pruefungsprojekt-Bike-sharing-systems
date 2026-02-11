@@ -1,8 +1,8 @@
 import pandas as pd
 from pathlib import Path
+import numpy as np
 
 DATA_DIR = Path(__file__).resolve().parent / "data"
-
 
 class DataAnalyzer:
     """
@@ -25,30 +25,15 @@ class DataAnalyzer:
         self.maintenance = pd.read_csv(DATA_DIR / "maintenance.csv")
 
     # ---------------------------
-    # Inspection
-    # ---------------------------
-    def inspect(self) -> None:
-        for name, df in [
-            ("Trips", self.trips),
-            ("Stations", self.stations),
-            ("Maintenance", self.maintenance),
-        ]:
-            print(f"\n{name}")
-            print(df.info())
-            print(df.isnull().sum())
-
-    # ---------------------------
     # Cleaning
     # ---------------------------
     def _clean_trips(self) -> None:
         df = self.trips.copy()
-
         df = df.drop_duplicates(subset=["trip_id"])
         df["start_time"] = pd.to_datetime(df["start_time"], errors="coerce")
         df["end_time"] = pd.to_datetime(df["end_time"], errors="coerce")
         df = df[df["end_time"] > df["start_time"]]
 
-        # Numeric columns
         for col in ["duration_minutes", "distance_km"]:
             df[col] = pd.to_numeric(
                 df[col].astype(str).str.replace(",", ".").str.strip(),
@@ -59,7 +44,6 @@ class DataAnalyzer:
         df["distance_km"] = df["distance_km"].fillna(df["distance_km"].median())
         df["status"] = df["status"].fillna("completed")
 
-        # Standardize categoricals
         for col in ["status", "user_type", "bike_type"]:
             df[col] = df[col].str.lower().str.strip()
 
@@ -78,6 +62,11 @@ class DataAnalyzer:
 
     def top_start_stations(self, n: int = 10) -> pd.DataFrame:
         counts = self.trips["start_station_id"].value_counts().head(n).reset_index()
+        counts.columns = ["station_id", "trip_count"]
+        return counts.merge(self.stations, on="station_id", how="left")[["station_id", "station_name", "trip_count"]]
+
+    def top_end_stations(self, n: int = 10) -> pd.DataFrame:
+        counts = self.trips["end_station_id"].value_counts().head(n).reset_index()
         counts.columns = ["station_id", "trip_count"]
         return counts.merge(self.stations, on="station_id", how="left")[["station_id", "station_name", "trip_count"]]
 
@@ -119,6 +108,38 @@ class DataAnalyzer:
         )
         return routes
 
+    def bike_utilization_rate(self) -> float:
+        total_time = (self.trips["end_time"] - self.trips["start_time"]).sum().total_seconds() / 3600
+        n_bikes = self.trips["bike_id"].nunique()
+        total_possible = n_bikes * (self.trips["end_time"].max() - self.trips["start_time"].min()).total_seconds() / 3600
+        return round((total_time / total_possible) * 100, 2)
+
+    def trip_completion_rate(self) -> dict:
+        counts = self.trips["status"].value_counts()
+        completed = counts.get("completed", 0)
+        cancelled = counts.get("cancelled", 0)
+        total = completed + cancelled
+        return {
+            "completed": completed,
+            "cancelled": cancelled,
+            "completion_rate_%": round((completed / total) * 100, 2) if total > 0 else 0
+        }
+
+    def avg_trips_per_user(self) -> pd.Series:
+        return self.trips.groupby("user_type")["user_id"].value_counts().groupby(level=0).mean().round(2)
+
+    def bikes_highest_maintenance(self, n: int = 10) -> pd.DataFrame:
+        counts = self.maintenance["bike_id"].value_counts().head(n).reset_index()
+        counts.columns = ["bike_id", "maintenance_count"]
+        return counts
+
+    def detect_outlier_trips(self, z_thresh: float = 3.0) -> pd.DataFrame:
+        df = self.trips.copy()
+        df["duration_z"] = (df["duration_minutes"] - df["duration_minutes"].mean()) / df["duration_minutes"].std()
+        df["distance_z"] = (df["distance_km"] - df["distance_km"].mean()) / df["distance_km"].std()
+        outliers = df[(df["duration_z"].abs() > z_thresh) | (df["distance_z"].abs() > z_thresh)]
+        return outliers
+
     # ---------------------------
     # Reporting
     # ---------------------------
@@ -133,43 +154,56 @@ class DataAnalyzer:
             "=" * 60,
         ]
 
-        # --- Q1 Overall Summary ---
+        # Q1 Overall Summary
         summary = self.total_trips_summary()
         lines += [
-            "\n--- Overall Summary ---",
+            "\n--- Q1: Overall Summary ---",
             f"Total trips        : {summary['total_trips']}",
             f"Total distance     : {summary['total_distance_km']} km",
             f"Average duration   : {summary['avg_duration_min']} min",
         ]
 
-        # --- Q2 Top 10 Start Stations ---
-        lines += ["\n--- Top 10 Start Stations ---", self.top_start_stations().to_string(index=False)]
+        # Q2 Top Start/End Stations
+        lines += ["\n--- Q2: Top 10 Start Stations ---", self.top_start_stations().to_string(index=False)]
+        lines += ["\n--- Q2: Top 10 End Stations ---", self.top_end_stations().to_string(index=False)]
 
-        # --- Q3 Peak Usage Hours ---
-        lines += ["\n--- Peak Usage Hours ---", self.peak_usage_hours().to_string()]
+        # Q3 Peak Usage Hours
+        lines += ["\n--- Q3: Peak Usage Hours ---", self.peak_usage_hours().to_string()]
 
-        # --- Q4 Busiest Days of Week ---
-        lines += ["\n--- Busiest Days of Week ---", self.busiest_day_of_week().to_string()]
+        # Q4 Busiest Days of Week
+        lines += ["\n--- Q4: Busiest Days of Week ---", self.busiest_day_of_week().to_string()]
 
-        # --- Q5 Avg Distance by User Type ---
-        lines += ["\n--- Avg Distance by User Type ---", self.avg_distance_by_user_type().to_string()]
+        # Q5 Avg Distance by User Type
+        lines += ["\n--- Q5: Avg Distance by User Type ---", self.avg_distance_by_user_type().to_string()]
 
-        # --- Q6 Avg Duration by User Type ---
-        lines += ["\n--- Avg Duration by User Type ---", self.avg_duration_by_user_type().to_string()]
+        # Q6 Bike Utilization Rate
+        lines += [f"\n--- Q6: Bike Utilization Rate --- {self.bike_utilization_rate()} %"]
 
-        # --- Q7 Monthly Trip Trend ---
-        lines += ["\n--- Monthly Trip Trend ---", self.monthly_trip_trend().to_string()]
+        # Q7 Monthly Trip Trend
+        lines += ["\n--- Q7: Monthly Trip Trend ---", self.monthly_trip_trend().to_string()]
 
-        # --- Q8 Top Active Users ---
-        lines += ["\n--- Top 15 Active Users ---", self.top_active_users().to_string(index=False)]
+        # Q8 Top Active Users
+        lines += ["\n--- Q8: Top 15 Active Users ---", self.top_active_users().to_string(index=False)]
 
-        # --- Q9 Maintenance Cost by Bike Type ---
-        lines += ["\n--- Maintenance Cost by Bike Type ---", self.maintenance_cost_by_bike_type().to_string()]
+        # Q9 Maintenance Cost by Bike Type
+        lines += ["\n--- Q9: Maintenance Cost by Bike Type ---", self.maintenance_cost_by_bike_type().to_string()]
 
-        # --- Q10 Top Routes ---
-        lines += ["\n--- Top 10 Most Common Routes ---", self.top_routes().to_string(index=False)]
+        # Q10 Top Routes
+        lines += ["\n--- Q10: Top 10 Most Common Routes ---", self.top_routes().to_string(index=False)]
+
+        # Q11 Trip Completion Rate
+        lines += ["\n--- Q11: Trip Completion Rate ---", str(self.trip_completion_rate())]
+
+        # Q12 Avg Trips per User
+        lines += ["\n--- Q12: Avg Trips per User by User Type ---", self.avg_trips_per_user().to_string()]
+
+        # Q13 Bikes with Highest Maintenance Frequency
+        lines += ["\n--- Q13: Bikes with Highest Maintenance Frequency ---", self.bikes_highest_maintenance().to_string(index=False)]
+
+        # Q14 Outlier Trips
+        outliers = self.detect_outlier_trips()
+        lines += [f"\n--- Q14: Number of Outlier Trips --- {len(outliers)}"]
 
         # Write to file
         report_path.write_text("\n".join(lines), encoding="utf-8")
         print(f"Report saved to {report_path}")
-
