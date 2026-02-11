@@ -68,7 +68,15 @@ def plot_duration_histogram(trips: pd.DataFrame) -> None:
 # Box plot — duration by user type
 # ---------------------------------------------------------------------------
 def plot_duration_by_user_type(trips: pd.DataFrame) -> None:
-    """Box plot comparing trip durations across user types (enhanced version)."""
+    """Box plot comparing trip durations across user types."""
+    """Box plot comparing trip durations across user types.
+
+    TODO:
+        - Group data by user_type
+        - Create side-by-side box plots
+        - Add title, axis labels
+        - Save as 'duration_by_user_type.png'
+    """
     df = trips[["user_type", "duration_minutes"]].dropna()
     
     fig, ax = plt.subplots(figsize=(8, 5))
