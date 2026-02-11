@@ -1,5 +1,5 @@
 from typing import Dict, List
-from models import Bike, Station, User, Trip, MaintenanceRecord
+from models import Bike, Station, User, Trip, MaintenanceRecord, BikeStatus
 from pricing import PricingStrategy, CasualPricing
 
 class BikeShareSystem:
@@ -13,9 +13,14 @@ class BikeShareSystem:
         self.maintenance_records: List[MaintenanceRecord] = []
         self.pricing_strategy: PricingStrategy = CasualPricing()
 
-    def add_bike(self, bike: Bike): self.bikes[bike.bike_id] = bike
-    def add_station(self, station: Station): self.stations[station.station_id] = station
-    def add_user(self, user: User): self.users[user.user_id] = user
+    def add_bike(self, bike: Bike):
+        self.bikes[bike.id] = bike  
+
+    def add_station(self, station: Station):
+        self.stations[station.id] = station  
+
+    def add_user(self, user: User):
+        self.users[user.id] = user  
 
     def record_trip(self, trip: Trip):
         self.trips.append(trip)
@@ -23,7 +28,7 @@ class BikeShareSystem:
 
     def record_maintenance(self, record: MaintenanceRecord):
         self.maintenance_records.append(record)
-        record.bike.status = record.bike.status.MAINTENANCE
+        record.bike.status = BikeStatus.MAINTENANCE  
 
     def set_pricing_strategy(self, strategy: PricingStrategy):
         self.pricing_strategy = strategy
