@@ -2,12 +2,12 @@
   CityBike — Analytics Summary Report
 ============================================================
 
---- Overall Summary ---
+--- Q1: Overall Summary ---
 Total trips        : 1495
 Total distance     : 11468.5 km
 Average duration   : 23.39 min
 
---- Top 10 Start Stations ---
+--- Q2: Top 10 Start Stations ---
 station_id      station_name  trip_count
      ST106          Old Town         113
      ST104     Market Square         110
@@ -20,7 +20,20 @@ station_id      station_name  trip_count
      ST100   Central Station          99
      ST101 University Campus          96
 
---- Peak Usage Hours ---
+--- Q2: Top 10 End Stations ---
+station_id      station_name  trip_count
+     ST114  Airport Terminal         114
+     ST105          Tech Hub         114
+     ST104     Market Square         112
+     ST101 University Campus         107
+     ST107       Harbor View         106
+     ST103    Riverside Park         104
+     ST108      Sports Arena         102
+     ST106          Old Town         100
+     ST100   Central Station          99
+     ST102         City Hall          96
+
+--- Q3: Peak Usage Hours ---
 hour
 6     74
 7     97
@@ -40,7 +53,7 @@ hour
 21    97
 22    95
 
---- Busiest Days of Week ---
+--- Q4: Busiest Days of Week ---
 weekday
 Tuesday      229
 Wednesday    223
@@ -50,17 +63,14 @@ Friday       212
 Sunday       207
 Saturday     192
 
---- Avg Distance by User Type ---
+--- Q5: Avg Distance by User Type ---
 user_type
 casual    7.50
 member    7.77
 
---- Avg Duration by User Type ---
-user_type
-casual    22.57
-member    23.84
+--- Q6: Bike Utilization Rate --- 0.15 %
 
---- Monthly Trip Trend ---
+--- Q7: Monthly Trip Trend ---
 year_month
 2024-01    126
 2024-02    114
@@ -76,7 +86,7 @@ year_month
 2024-12    116
 Freq: M
 
---- Top 15 Active Users ---
+--- Q8: Top 15 Active Users ---
 user_id  trip_count
 USR1014          60
 USR1080          44
@@ -94,12 +104,12 @@ USR1047          32
 USR1103          31
 USR1094          30
 
---- Maintenance Cost by Bike Type ---
+--- Q9: Maintenance Cost by Bike Type ---
 bike_type
 classic      5496.39
 electric    13988.04
 
---- Top 10 Most Common Routes ---
+--- Q10: Top 10 Most Common Routes ---
 start_station_id end_station_id  trip_count
            ST113          ST105          14
            ST107          ST107          13
@@ -111,3 +121,26 @@ start_station_id end_station_id  trip_count
            ST103          ST111          11
            ST107          ST106          11
            ST108          ST105          11
+
+--- Q11: Trip Completion Rate ---
+{'completed': 1321, 'cancelled': 174, 'completion_rate_%': 88.36}
+
+--- Q12: Avg Trips per User by User Type ---
+user_type
+casual     8.2
+member    14.8
+
+--- Q13: Bikes with Highest Maintenance Frequency ---
+bike_id  maintenance_count
+  BK261                 12
+  BK312                 12
+  BK329                 11
+  BK315                  9
+  BK295                  9
+  BK317                  9
+  BK251                  8
+  BK227                  7
+  BK320                  6
+  BK333                  6
+
+--- Q14: Number of Outlier Trips --- 29

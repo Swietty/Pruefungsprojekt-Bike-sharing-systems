@@ -18,11 +18,10 @@ from algorithms import (
 
 def main():
     # ---------------------------
-    # Analytics
+    # Analytics 
     # ---------------------------
     analyzer = DataAnalyzer(output_dir="output")  
     analyzer.load_data()
-    analyzer.inspect()
     analyzer._clean_trips() 
 
     distances = analyzer.trips["distance_km"].fillna(analyzer.trips["distance_km"].median())
@@ -31,11 +30,11 @@ def main():
     print("\n--- First 5 distances ---")
     print(distances_list[:5])
 
-    # Generate summary report (this will create output/summary_report.txt)
+    # Generate final summary report 
     analyzer.generate_summary_report()
-
+    
     # ---------------------------
-    # BikeShareSystem Demo
+    # BikeShareSystem 
     # ---------------------------
     system = BikeShareSystem()
 
@@ -76,8 +75,10 @@ def main():
     print(system)
 
     # ---------------------------
-    # Sorting & Searching Demo
+    # Sorting & Searching 
     # ---------------------------
+    distances_list = analyzer.trips["distance_km"].fillna(analyzer.trips["distance_km"].median()).tolist()
+
     sorted_merge = merge_sort(distances_list)
     sorted_insertion = insertion_sort(distances_list)
 
@@ -112,6 +113,7 @@ def main():
     plot_monthly_trend(analyzer.trips)
     plot_duration_histogram(analyzer.trips)
     plot_duration_by_user_type(analyzer.trips)
+
 
 if __name__ == "__main__":
     main()
