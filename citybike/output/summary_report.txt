@@ -2,10 +2,10 @@
   CityBike — Analytics Summary Report
 ============================================================
 
---- Q1: Overall Summary ---
-Total trips        : 1495
-Total distance     : 11468.5 km
-Average duration   : 23.39 min
+--- Q1: Overall Trip Statistics ---
+Total trips       : 1495
+Total distance    : 11468.45 km
+Average duration  : 23.39 min
 
 --- Q2: Top 10 Start Stations ---
 station_id      station_name  trip_count
@@ -33,7 +33,7 @@ station_id      station_name  trip_count
      ST100   Central Station          99
      ST102         City Hall          96
 
---- Q3: Peak Usage Hours ---
+--- Q3: Usage by Hour of Day ---
 hour
 6     74
 7     97
@@ -63,14 +63,14 @@ Friday       212
 Sunday       207
 Saturday     192
 
---- Q5: Avg Distance by User Type ---
+--- Q5: Average Distance by User Type ---
 user_type
 casual    7.50
 member    7.77
 
 --- Q6: Bike Utilization Rate --- 0.15 %
 
---- Q7: Monthly Trip Trend ---
+--- Q7: Trip Trend by Month ---
 year_month
 2024-01    126
 2024-02    114
@@ -86,7 +86,7 @@ year_month
 2024-12    116
 Freq: M
 
---- Q8: Top 15 Active Users ---
+--- Q8: Top 15 Most Active Users ---
 user_id  trip_count
 USR1014          60
 USR1080          44
@@ -104,12 +104,12 @@ USR1047          32
 USR1103          31
 USR1094          30
 
---- Q9: Maintenance Cost by Bike Type ---
+--- Q9: Maintenance Costs by Bike Type ---
 bike_type
 classic      5496.39
 electric    13988.04
 
---- Q10: Top 10 Most Common Routes ---
+--- Q10: Top 10 Most Popular Routes ---
 start_station_id end_station_id  trip_count
            ST113          ST105          14
            ST107          ST107          13
@@ -125,7 +125,7 @@ start_station_id end_station_id  trip_count
 --- Q11: Trip Completion Rate ---
 {'completed': 1321, 'cancelled': 174, 'completion_rate_%': 88.36}
 
---- Q12: Avg Trips per User by User Type ---
+--- Q12: Average Trips per User by Type ---
 user_type
 casual     8.2
 member    14.8
@@ -143,4 +143,4 @@ bike_id  maintenance_count
   BK320                  6
   BK333                  6
 
---- Q14: Number of Outlier Trips --- 29
+--- Q14: Detected Anomalous Trips --- 29 found

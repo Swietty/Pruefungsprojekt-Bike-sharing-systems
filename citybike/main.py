@@ -34,45 +34,64 @@ def main():
     analyzer.generate_summary_report()
     
     # ---------------------------
-    # BikeShareSystem 
+    # BikeShareSystem Integration
     # ---------------------------
     system = BikeShareSystem()
-
-    bike = BikeFactory.create_from_dict({
-        "bike_id": "B001",
-        "bike_type": "classic"
+    
+    # loading data from analyzer into system
+    print("\n--- Loading data from analyzer into system ---")
+    system.load_from_analyzer(analyzer)
+    print(f" Loaded {len(system.users)} users and {len(system.stations)} stations from CSV")
+    
+    #  Factory Pattern Demonstration
+    print("\n--- Factory Pattern Demonstration ---")
+    demo_bike = BikeFactory.create_from_dict({
+        "bike_id": "DEMO-E001",
+        "bike_type": "electric",
+        "battery_level": 85.0,
+        "max_range_km": 45.0
     })
-
-    user = UserFactory.create_from_dict({
-        "user_id": "U001",
-        "name": "Alice Johnson",
-        "email": "alice.johnson@example.com",
-        "user_type": "casual"
-    })
-
-    station = Station("S001", "Central Station", 10)
-
-    system.add_bike(bike)
-    system.add_user(user)
-    system.add_station(station)
-
-    trip = Trip(
-        "T001",
-        user,
-        bike,
-        station,
-        station,
-        start_time=datetime.now(),
-        end_time=datetime.now() + timedelta(minutes=30),
-        distance_km=2.5
-    )
-
-    system.record_trip(trip)
-    system.set_pricing_strategy(CasualPricing())
-    cost = system.calculate_trip_cost(trip)
-
-    print(f"\nTrip cost: €{cost:.2f}")
-    print(system)
+    print(f" Created demo bike: {demo_bike}")
+    system.add_bike(demo_bike)
+    
+    # use real user from CSV to create a trip
+    if system.users:
+        # select first user from the loaded users
+        first_user = list(system.users.values())[0]
+        print(f"\n--- Creating test trip with real user from CSV ---")
+        print(f"Using user: {first_user.name} ({first_user.id})")
+        
+        # select first station from the loaded stations
+        first_station = list(system.stations.values())[0] if system.stations else None
+        
+        if first_station:
+            # create a test trip
+            test_trip = Trip(
+                "DEMO-TRIP-001",
+                first_user,
+                demo_bike,
+                first_station,
+                first_station,
+                start_time=datetime.now(),
+                end_time=datetime.now() + timedelta(minutes=25),
+                distance_km=3.5
+            )
+            
+            # record the trip in the system
+            system.record_trip(test_trip)
+            
+            # calculate cost using the pricing strategy
+            system.set_pricing_strategy(CasualPricing())
+            cost = system.calculate_trip_cost(test_trip)
+            
+            print(f" Trip created: {test_trip.duration_minutes} min, {test_trip.distance_km} km")
+            print(f" Trip cost: €{cost:.2f} (CasualPricing strategy)")
+    
+    # final summary of the system state
+    print(f"\n {system}")
+    print(f"   Total trips recorded: {len(system.trips)}")
+    print(f"   Pricing strategy: {system.pricing_strategy.get_name()}")
+    
 
     # ---------------------------
     # Sorting & Searching 

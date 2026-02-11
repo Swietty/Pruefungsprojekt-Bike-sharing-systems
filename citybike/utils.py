@@ -3,7 +3,6 @@ from datetime import datetime
 from typing import Any
 from enum import Enum
 
-
 # ---------------------------------------------------------------------------
 # Generic validators
 # ---------------------------------------------------------------------------
