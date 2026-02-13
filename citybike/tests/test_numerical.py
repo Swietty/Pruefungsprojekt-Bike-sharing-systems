@@ -4,7 +4,7 @@ Performs checks on:
     - Station distance matrix
     - Trip statistics
     - Outlier detection
-    - Vectorized fare calculation
+    - Vectorized fare calculation - python -m tests.test_numerical
 """
 
 import numpy as np

@@ -56,7 +56,7 @@ Perfect for portfolio projects, learning, and understanding real-world data syst
 - User type comparison charts
 - Auto-exported PNG figures
 
-### 💰 Pricing Strategies
+### Pricing Strategies
 - **Casual Pricing** - Pay-per-minute model
 - **Member Pricing** - Discounted subscription rates
 - **Peak Hour Pricing** - Dynamic pricing during rush hours
@@ -76,10 +76,10 @@ Perfect for portfolio projects, learning, and understanding real-world data syst
 ```
 citybike/
 ├── 📄 main.py                 # Entry point - runs complete pipeline
-├── 🏗️  system.py              # BikeShareSystem (Facade pattern)
+├── 🏗️ system.py               # BikeShareSystem (Facade pattern)
 ├── 📦 models.py               # Domain classes (Bike, User, Station, etc.)
 ├── 📊 analyzer.py             # Data analysis engine (16+ metrics)
-├── ⚙️  algorithms.py          # Sorting, searching, benchmarking
+├── ⚙️ algorithms.py           # Sorting, searching, benchmarking
 ├── 🔢 numerical.py            # NumPy statistics & outlier detection
 ├── 📈 visualization.py        # Matplotlib chart generation
 ├── 💳 pricing.py              # Pricing strategy implementations
@@ -96,9 +96,10 @@ citybike/
 │   ├── summary_report.txt
 │   └── figures/               # PNG charts
 │
-└── 📂 tests/
-    ├── test_numerical.py      # Unit tests
-    └── __init__.py
+└── 📂 tests/                  # Unit tests
+    ├──test_pricing.py
+    ├── test_numerical.py      
+    └── __init__.py            
 ```
 
 ---
@@ -356,6 +357,7 @@ Run unit tests with pytest:
 ```bash
 pytest tests/
 pytest tests/test_numerical.py -v
+pytest tests/test_pricing.py -v
 ```
 
 ---

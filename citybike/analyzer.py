@@ -119,8 +119,8 @@ class DataAnalyzer:
     # - Who are the most active users?
     # - Etc.
     #
-    # ✅ NOTE: The assignment required 10+ analysis methods!
-    # You have 16 methods (even more than required!) 🏆
+    # NOTE: The assignment required 10+ analysis methods!
+    # You have 16 methods (even more than required!) 
     #
 
     def total_trips_summary(self) -> dict:
@@ -226,7 +226,11 @@ class DataAnalyzer:
         # Extract the hour part (0-23) from datetime
         df["hour"] = df["start_time"].dt.hour
         # Count trips in each hour
-        return df.groupby("hour").size()
+        counts = df.groupby("hour").size()
+        return counts.reindex(range(24), fill_value=0)
+        
+
+
 
     def busiest_day_of_week(self) -> pd.Series:
         """QUESTION: Which day of the week is the busiest (Monday, Tuesday, ...)?
@@ -585,8 +589,12 @@ class DataAnalyzer:
         lines += ["\n--- Q2: Top 10 End Stations ---", self.top_end_stations().to_string(index=False)]
 
         # Q3: Peak hours
-        lines += ["\n--- Q3: Usage by Hour of Day ---", self.peak_usage_hours().to_string()]
-
+        peak_hours = self.peak_usage_hours()
+        max_hour = peak_hours.idxmax()
+        max_count = peak_hours.max()
+        lines += ["\n--- Q3: Usage by Hour of Day ---", peak_hours.to_string()]
+        lines += [f"\nPeak Hour: {max_hour}:00 — {max_count} trips"]
+        
         # Q4: Busiest days of week
         lines += ["\n--- Q4: Busiest Days of Week ---", self.busiest_day_of_week().to_string()]
 

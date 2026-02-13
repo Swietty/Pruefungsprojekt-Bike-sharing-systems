@@ -35,6 +35,12 @@ station_id      station_name  trip_count
 
 --- Q3: Usage by Hour of Day ---
 hour
+0      0
+1      0
+2      0
+3      0
+4      0
+5      0
 6     74
 7     97
 8     68
@@ -52,6 +58,9 @@ hour
 20    98
 21    97
 22    95
+23     0
+
+Peak Hour: 18:00 — 99 trips
 
 --- Q4: Busiest Days of Week ---
 weekday

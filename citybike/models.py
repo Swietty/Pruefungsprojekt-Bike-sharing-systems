@@ -190,8 +190,8 @@ class Station(Entity):
 
         self._name = validate_non_empty_string(name, "station_name")
         self._capacity = validate_positive(capacity, "capacity")
-        self._latitude = latitude
-        self._longitude = longitude
+        self._latitude = validate_range(latitude, -90, 90, "latitude")
+        self._longitude = validate_range(longitude, -180, 180, "longitude")
         self._available_bikes: List[Bike] = []
 
     @property
@@ -216,8 +216,10 @@ class Station(Entity):
         self._available_bikes.append(bike)
 
     def remove_bike(self, bike: Bike):
+        if self.available_count == 0:
+            raise ValueError("No bikes available at this station")
         self._available_bikes.remove(bike)
-
+        
     def __str__(self):
         return f"Station {self.name}: {self.available_count}/{self.capacity} bikes"
 
@@ -340,6 +342,9 @@ class Trip(Entity):
     ):
         super().__init__(trip_id)
 
+        if not all([user, bike, start_station, end_station]):
+            raise ValueError("user, bike, start_station, and end_station must not be None")
+
         validate_datetime_order(start_time, end_time)
 
         self.user = user
@@ -384,7 +389,7 @@ class MaintenanceRecord(Entity):
             maintenance_type, MaintenanceType, "maintenance_type"
         )
         self.cost = validate_non_negative(cost, "cost")
-        self.description = description
+        self.description = validate_non_empty_string(description, "description") if description else ""
 
     def __str__(self):
         return f"Maintenance {self.id} - {self.maintenance_type.value}"

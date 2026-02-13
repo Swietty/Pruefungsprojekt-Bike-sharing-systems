@@ -1,32 +1,6 @@
 # ============================================================
 # SORTING AND SEARCH MODULE
 # ============================================================
-# WHY IS THIS FILE NEEDED?
-# ============================================================
-#
-# This is an educational module about SORTING and SEARCHING algorithms.
-# 
-# In real projects we have data (bicycles, users, trips)
-# and often need to:
-#   1. SORT data (bikes by distance in descending order)
-#   2. FIND a specific element (is there a bike with ID=123?)
-#
-# AND it is very important to CHOOSE the right algorithm because:
-#   - Wrong algorithm can be 1000x SLOWER!
-#   - On 1,000,000 elements difference between O(n) and O(n²) = hours vs seconds!
-#
-# ============================================================
-# IMPLEMENTED ALGORITHMS (choose what you need!)
-# ============================================================
-#
-# SORTING:
-#   merge_sort()     — O(n log n) always — stable, predictable ⭐
-#   insertion_sort() — O(n²) average — slower but simple for small data
-#
-# SEARCH:
-#   binary_search()  — O(log n) — super fast but REQUIRES sorting! ⚡
-#   linear_search()  — O(n) — slow but works on unsorted data
-#
 # BENCHMARKING:
 #   benchmark_sort()   — compare speed of different sorts
 #   benchmark_search() — compare speed of different searches
@@ -42,12 +16,8 @@
 #   O(log n)  — ~20 operations        ← binary search super fast!
 #   O(n)      — 1,000,000 operations  ← acceptable
 #   O(n log n)— 20,000,000 operations ← merge sort ok
-#   O(n²)     — trillion operations!!!  ← VERY SLOW 😱
+#   O(n²)     — trillion operations!!!  ← VERY SLOW
 #   O(2ⁿ)     — infinity              ← NEVER do this!
-#
-# GRAPHIC comparison:
-#   https://www.bigocheatsheet.com/ ← see the graph!
-#
 # ============================================================
 
 import timeit  # Module for measuring execution time
